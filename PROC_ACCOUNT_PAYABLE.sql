@@ -29,9 +29,9 @@ BEGIN
 									WHEN E.FORM_ID IS NULL THEN NULL
 									ELSE E.PAYPAL_TRANSACTION_ID
 							   END AS ''Reference'',
-							   Round(cast(SUM(E.AMOUNT) as Decimal(22,2)),2) AS ''Amount'',
-							   Round(cast(SUM(E.FORM_AMOUNT) as Decimal(22,2)),2) AS ''Net Amount'',
-							   Round(cast(SUM(E.FORM_AMOUNT) as Decimal(22,2)),2) AS ''Amount Due'',
+							   ROUND(CAST(SUM(E.AMOUNT) AS DECIMAL(22,2)),2) AS ''Amount'',
+							   ROUND(CAST(SUM(E.FORM_AMOUNT) AS DECIMAL(22,2)),2) AS ''Net Amount'',
+							   ROUND(CAST(SUM(E.FORM_AMOUNT) AS DECIMAL(22,2)),2) AS ''Amount Due'',
 							   CASE
 									WHEN E.FORM_ID IS NULL THEN NULL
 									ELSE E.TERM_NAME
@@ -44,11 +44,11 @@ BEGIN
 									WHEN E.FORM_ID IS NULL THEN NULL
 									ELSE E.AGE
 							   END AS ''Age'',
-							   Round(cast(SUM(E.RANGE_1) as Decimal(22,2)),2) AS ''0 - 30'',
-							   Round(cast(SUM(E.RANGE_2) as Decimal(22,2)),2) AS ''31 - 60'',
-							   Round(cast(SUM(E.RANGE_3) as Decimal(22,2)),2) AS ''61 - 90'',
-							   Round(cast(SUM(E.RANGE_4) as Decimal(22,2)),2) AS ''Over 90 Days'',
-							   Round(cast((SUM(IFNULL(E.RANGE_1, 0)) + SUM(IFNULL(E.RANGE_2, 0)) + SUM(IFNULL(E.RANGE_3, 0)) + SUM(IFNULL(E.RANGE_4, 0))) as Decimal(22,2)),2) AS TOTAL,
+							   ROUND(CAST(SUM(E.RANGE_1) AS DECIMAL(22,2)),2) AS ''0 - 30'',
+							   ROUND(CAST(SUM(E.RANGE_2) AS DECIMAL(22,2)),2) AS ''31 - 60'',
+							   ROUND(CAST(SUM(E.RANGE_3) AS DECIMAL(22,2)),2) AS ''61 - 90'',
+							   ROUND(CAST(SUM(E.RANGE_4) AS DECIMAL(22,2)),2) AS ''Over 90 Days'',
+							   ROUND(CAST((SUM(IFNULL(E.RANGE_1, 0)) + SUM(IFNULL(E.RANGE_2, 0)) + SUM(IFNULL(E.RANGE_3, 0)) + SUM(IFNULL(E.RANGE_4, 0))) AS DECIMAL(22,2)),2) AS TOTAL,
                                COUNT(*) OVER() AS TOTAL_ROWS
 						  FROM ( 
                           
@@ -86,7 +86,7 @@ BEGIN
 											 FROM PAYMENTS_DETAIL_NEW
 											WHERE IS_CONFLICTED_FULL = ''N''
                                               AND FORM_FLAG = ''T''
-                                              AND COMPANY_ID = 1
+                                              AND COMPANY_ID = \'',P_COMPANY_ID,'\'
                                               AND CASE
 													   WHEN \'',P_VENDOR_ID,'\' <> "" THEN VENDOR_ID = \'',P_VENDOR_ID,'\'
 													   ELSE TRUE
@@ -96,7 +96,7 @@ BEGIN
 																  WHEN \'',P_VENDOR_ID,'\' <> "" THEN B.ID = \'',P_VENDOR_ID,'\'
 																  ELSE TRUE
 															 END))
-									   JOIN Vendor_Detail C ON (A.FORM_ID = C.ID 
+									   JOIN VENDOR_DETAIL C ON (A.FORM_ID = C.ID 
 															   AND A.FORM_FLAG = ''T''
 															  -- AND C.COMPANY_ID = \'',P_COMPANY_ID,'\'
 															   AND CASE
